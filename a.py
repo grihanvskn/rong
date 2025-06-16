@@ -16,11 +16,13 @@ BACKGROUND_COLOR = (0, 0, 0)
 CIRCLE_COLOR = (50, 50, 50)
 BALL_COLOR = (255, 255, 255)
 PADDLE_COLORS = [(255, 100, 100), (100, 100, 255)]
+SCORE_COLOR = (200, 200, 200)
 
 #экран
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Circle Pong")
 clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 72)
 
 #инициализация мяча и ракеток
 def reset_ball():
@@ -64,6 +66,7 @@ def check_paddle_collision(paddle_angle, ball_angle):
         return start_angle <= ball_angle <= end_angle
 
 #игра
+scores = [0, 0]
 running = True
 while running:
     #выход
@@ -124,6 +127,11 @@ while running:
             ball['pos'][0] = CENTER[0] + dx * factor
             ball['pos'][1] = CENTER[1] + dy * factor
         else:
+            #print(ball['pos'][0])
+            if ball['pos'][0] > 400:
+                scores[0] += 1  #очко первому игроку
+            else:
+                scores[1] += 1  #очко второму игроку
             ball = reset_ball()
     
     screen.fill(BACKGROUND_COLOR)
@@ -146,7 +154,9 @@ while running:
         
         if points:
             pygame.draw.lines(screen, PADDLE_COLORS[i], False, points, 5)
-    
+
+    score_text = font.render(f"{scores[0]} : {scores[1]}", True, SCORE_COLOR)
+    screen.blit(score_text, (WIDTH // 2 - score_text.get_width() // 2, 20))
     pygame.display.flip()
     clock.tick(60)
 
